@@ -70,13 +70,23 @@ def check_dependencies() -> bool:
 
 
 def start_daemon(port: int, dev: bool = False) -> subprocess.Popen:
-    """Start the MCP daemon process"""
+    """Start MCP daemon process"""
     daemon_entry = find_daemon_entry()
     daemon_dir = daemon_entry.parent.parent
+
+    # Calculate project root from daemon entry
+    # daemon_entry is: project_root/daemon/dist/daemon/index.js
+    # So: daemon_entry.parent.parent.parent = project_root
+    project_root = daemon_dir.parent.parent
 
     # Prepare environment
     env = os.environ.copy()
     env["MCP_DAEMON_PORT"] = str(port)
+
+    # Pass config path to daemon
+    config_path = project_root / "mcp-servers.json"
+    if config_path.exists():
+        env["MCP_DAEMON_CONFIG"] = str(config_path)
 
     # Prepare command
     if daemon_entry.suffix == ".ts":
@@ -89,7 +99,8 @@ def start_daemon(port: int, dev: bool = False) -> subprocess.Popen:
     print(f"\n🚀 Starting MCP Daemon...")
     print(f"   Entry: {daemon_entry}")
     print(f"   Port: {port}")
-    print(f"   Directory: {daemon_dir}\n")
+    print(f"   Directory: {daemon_dir}")
+    print(f"   Config: {config_path}\n")
 
     # Start daemon
     process = subprocess.Popen(

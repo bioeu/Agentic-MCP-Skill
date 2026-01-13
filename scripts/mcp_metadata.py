@@ -41,32 +41,20 @@ async def get_metadata(daemon_port: int, server: str) -> Dict[str, Any]:
 
             session_id = connect_data["sessionId"]
 
-        # Get metadata - Daemon doesn't have a dedicated endpoint for this
-        # So we use tools/list to infer server info
-        async with session.post(
-            f"{daemon_url}/call",
-            json={
-                "sessionId": session_id,
-                "method": "tools/list",
-                "params": {}
-            },
+        # Get metadata from dedicated endpoint
+        async with session.get(
+            f"{daemon_url}/metadata?sessionId={session_id}",
             headers={"Content-Type": "application/json"}
         ) as resp:
             if resp.status != 200:
                 error_data = await resp.json()
-                raise Exception(f"Tools list failed: {error_data.get('error', 'Unknown error')}")
+                raise Exception(f"Get metadata failed: {error_data.get('error', 'Unknown error')}")
 
-            call_data = await resp.json()
-            result = call_data.get("result", {})
+            metadata_data = await resp.json()
+            if not metadata_data.get("success"):
+                raise Exception(f"Get metadata failed: {metadata_data}")
 
-        # Extract metadata from initialize result that's cached in daemon
-        # Since we can't directly access it, return basic info
-        metadata = {
-            "server": server,
-            "sessionId": session_id,
-            "protocolVersion": "2024-11-05",
-            "status": "connected"
-        }
+            metadata = metadata_data["metadata"]
 
         return metadata
 

@@ -52,6 +52,8 @@ export interface MCPServerConfig {
   url?: string;
   /** Environment variables */
   env?: Record<string, string>;
+  /** Server description (optional, for AI context) */
+  description?: string;
 }
 
 /**

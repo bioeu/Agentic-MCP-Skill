@@ -153,12 +153,13 @@ python scripts/setup.py
 
 ### 2. 配置
 
-編輯 `mcp-servers.json`：
+編輯專案根目錄的 `mcp-servers.json`：
 
 ```json
 {
   "servers": {
     "playwright": {
+      "description": "瀏覽器自動化工具，可用於網頁導航、截圖、點擊操作、表單填寫等",
       "transportType": "stdio",
       "command": "npx",
       "args": ["@playwright/mcp@latest", "--isolated"]
@@ -166,6 +167,11 @@ python scripts/setup.py
   }
 }
 ```
+
+**配置檔案位置優先順序**：
+1. `MCP_DAEMON_CONFIG` 環境變數（若已設定）
+2. 專案根目錄的 `mcp-servers.json`
+3. `config/mcp-servers.json`（相對於 daemon 工作目錄）
 
 ### 3. 啟動 Daemon
 
@@ -339,6 +345,7 @@ python scripts/daemon_reload.py
 {
   "servers": {
     "playwright": {
+      "description": "瀏覽器自動化工具，可用於網頁導航、截圖、點擊操作、表單填寫等",
       "transportType": "stdio",
       "command": "npx",
       "args": ["@playwright/mcp@latest", "--isolated"]
@@ -346,6 +353,9 @@ python scripts/daemon_reload.py
   }
 }
 ```
+
+**配置說明**：
+- `description`（選填）：伺服器描述，供 AI 理解此 MCP server 的用途。若未提供，Layer 1 metadata 將不包含此欄位。
 ---
 
 ## 相關資源

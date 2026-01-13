@@ -153,12 +153,13 @@ This command automatically checks environment, installs dependencies, and compil
 
 ### 2. Configure
 
-Edit `mcp-servers.json`:
+Edit `mcp-servers.json` in the project root:
 
 ```json
 {
   "servers": {
     "playwright": {
+      "description": "Browser automation tool for web navigation, screenshots, clicks, form filling, and more",
       "transportType": "stdio",
       "command": "npx",
       "args": ["@playwright/mcp@latest", "--isolated"]
@@ -166,6 +167,11 @@ Edit `mcp-servers.json`:
   }
 }
 ```
+
+**Configuration File Location Priority**:
+1. `MCP_DAEMON_CONFIG` environment variable (if set)
+2. `mcp-servers.json` in project root
+3. `config/mcp-servers.json` (relative to daemon working directory)
 
 ### 3. Start Daemon
 
@@ -340,6 +346,7 @@ Edit `mcp-servers.json`:
 {
   "servers": {
     "playwright": {
+      "description": "Browser automation tool for web navigation, screenshots, clicks, and form filling",
       "transportType": "stdio",
       "command": "npx",
       "args": ["@playwright/mcp@latest", "--isolated"]
@@ -347,6 +354,9 @@ Edit `mcp-servers.json`:
   }
 }
 ```
+
+**Configuration Notes**:
+- `description` (optional): Server description for AI to understand the MCP server's purpose. If not provided, Layer 1 metadata will not include this field.
 
 ---
 

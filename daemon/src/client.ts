@@ -108,6 +108,11 @@ export class ProgressiveMCPClient {
       capabilities: initResult.capabilities
     };
 
+    // Use custom description from config if provided
+    if (this.config.description) {
+      this._metadata.description = this.config.description;
+    }
+
     // Cache complete tool list (internal use)
     const toolsResponse = await this.transport.sendRequest<{ tools: unknown[] }>(
       'tools/list',
@@ -132,6 +137,13 @@ export class ProgressiveMCPClient {
    */
   isConnected(): boolean {
     return this.transport?.isConnected() ?? false;
+  }
+
+  /**
+   * Get cached metadata (for internal use by daemon)
+   */
+  getCachedMetadata(): MCPServerMetadata | null {
+    return this._metadata;
   }
 
   // ========== Layer 1: Metadata ==========

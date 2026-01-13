@@ -68,7 +68,8 @@ export class MCPDaemon {
    */
   private loadServerConfigs(configPath?: string): void {
     const defaultPaths = [
-      configPath,
+      process.env.MCP_DAEMON_CONFIG,  // Environment variable (highest priority)
+      configPath,                        // Passed config path
       join(process.cwd(), 'mcp-servers.json'),
       join(process.cwd(), 'config', 'mcp-servers.json'),
     ];
@@ -151,6 +152,8 @@ export class MCPDaemon {
 
       if (pathname === '/connect' && req.method === 'POST') {
         await this.handleConnect(req, res);
+      } else if (pathname === '/metadata' && req.method === 'GET') {
+        await this.handleMetadata(req, res);
       } else if (pathname === '/call' && req.method === 'POST') {
         await this.handleCall(req, res);
       } else if (pathname === '/request' && req.method === 'POST') {
@@ -211,6 +214,56 @@ export class MCPDaemon {
       });
       req.on('error', reject);
     });
+  }
+
+  /**
+   * Handle metadata request
+   * GET /metadata?sessionId=xxx
+   *
+   * Returns MCP server metadata from ProgressiveMCPClient's cached _metadata
+   */
+  private async handleMetadata(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    const url = new URL(req.url || '', `http://${req.headers.host}`);
+    const sessionId = url.searchParams.get('sessionId');
+
+    if (!sessionId) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        success: false,
+        error: 'sessionId is required'
+      }));
+      return;
+    }
+
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        success: false,
+        error: `Session '${sessionId}' not found`
+      }));
+      return;
+    }
+
+    session.lastActivityAt = new Date();
+
+    const metadata = session.client.getCachedMetadata();
+
+    if (!metadata) {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({
+        success: false,
+        error: 'Metadata not available (client may not be properly initialized)'
+      }));
+      return;
+    }
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      success: true,
+      sessionId,
+      metadata
+    }));
   }
 
   /**
@@ -596,6 +649,7 @@ export class MCPDaemon {
         console.log(`\nMCP Daemon running at http://localhost:${this.port}`);
         console.log(`Health check: http://localhost:${this.port}/health`);
         console.log(`\nAPI Endpoints:`);
+        console.log(`  GET  /metadata?sessionId=xxx - Get MCP server metadata`);
         console.log(`  POST /connect              - Get global session ID`);
         console.log(`  POST /call                 - Call tools`);
         console.log(`  POST /request             - Generic JSON-RPC`);
